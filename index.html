@@ -219,61 +219,100 @@
   .stat .num { font-size:1.55rem; font-weight:700; background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent; }
   .stat .lbl { font-family:'JetBrains Mono', monospace; font-size:.75rem; color:var(--muted); margin-top:4px; letter-spacing:.5px; }
 
-  /* ===== about ===== */
-  .about-grid { display:grid; grid-template-columns:1.4fr 1fr; gap:26px; align-items:start; }
-  .glass {
-    background:var(--surface); border:1px solid var(--surface-border); border-radius:18px;
-    padding:30px; backdrop-filter:blur(10px); transition:.25s;
+  /* ===== about — box-free editorial ===== */
+  .about-edo {
+    display:grid; grid-template-columns:1.55fr 1fr; gap:0;
+    border-top:1px solid var(--surface-border);
   }
-  .glass:hover { border-color:rgba(255,71,87,.35); box-shadow:0 10px 40px rgba(0,0,0,.45); }
-  .about-text p { color:var(--muted); margin-bottom:14px; }
-  .about-text p strong { color:var(--text); font-weight:600; }
-  .edu-tag {
-    font-family:'JetBrains Mono', monospace; font-size:.8rem; color:var(--red);
-    display:inline-flex; align-items:center; gap:8px; margin-top:6px;
+  .edo-col { padding-top:30px; min-width:0; }
+  .about-edo .main { padding-right:52px; }
+  .about-edo .side {
+    padding-left:46px; border-left:1px solid var(--surface-border); position:relative;
   }
-  .edu-row { display:flex; justify-content:space-between; gap:12px; margin-bottom:16px; }
-  .edu-row:last-child { margin-bottom:0; }
-  .edu-row .deg { font-weight:600; font-size:.95rem; }
-  .edu-row .org { color:var(--muted); font-size:.85rem; margin-top:4px; }
-  .edu-row .meta { font-family:'JetBrains Mono', monospace; color:var(--red); font-size:.78rem; text-align:right; white-space:nowrap; }
-  .cgpa-bar { margin-top:20px; }
-  .cgpa-bar .lbl { display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace; font-size:.75rem; color:var(--muted); margin-bottom:8px; }
-  .bar { height:8px; border-radius:6px; background:rgba(255,255,255,.06); overflow:hidden; }
+  .about-edo .side::before {
+    content:''; position:absolute; left:-1px; top:30px; width:1px; height:70px;
+    background:linear-gradient(180deg, var(--red), transparent);
+  }
+  .edo-label {
+    display:flex; align-items:center; gap:10px; margin-bottom:24px;
+    font-family:'JetBrains Mono', monospace; font-size:.67rem;
+    letter-spacing:2.5px; text-transform:uppercase; color:var(--muted);
+  }
+  .edo-label b { color:var(--red); font-weight:600; }
+  .edo-label i {
+    flex:1; height:1px;
+    background:linear-gradient(90deg, rgba(255,255,255,.14), transparent);
+  }
+  .edo-copy p { color:var(--muted); font-size:.97rem; line-height:1.8; margin-bottom:16px; }
+  .edo-copy p strong { color:var(--text); font-weight:600; }
+  .edo-copy p.lead { font-size:1.06rem; line-height:1.78; }
+  .edo-note {
+    font-family:'JetBrains Mono', monospace; font-size:.77rem; color:var(--red);
+    display:flex; align-items:baseline; gap:9px; margin-top:2px; letter-spacing:.3px;
+  }
+  .edo-note span { font-size:.85rem; }
+  .edu-entry { padding-bottom:20px; margin-bottom:20px; border-bottom:1px solid rgba(255,255,255,.06); }
+  .edu-entry:last-of-type { border-bottom:0; padding-bottom:0; margin-bottom:0; }
+  .edu-entry .deg { font-size:1rem; font-weight:600; }
+  .edu-entry .org { color:var(--muted); font-size:.86rem; margin-top:5px; line-height:1.55; }
+  .edu-entry .meta {
+    font-family:'JetBrains Mono', monospace; font-size:.69rem; letter-spacing:2px;
+    color:var(--red); margin-top:9px; text-transform:uppercase;
+  }
+  .gpa { margin:22px 0; }
+  .gpa .lbl {
+    display:flex; justify-content:space-between; font-family:'JetBrains Mono', monospace;
+    font-size:.71rem; letter-spacing:1.5px; color:var(--muted); margin-bottom:10px;
+  }
+  .bar { height:3px; background:rgba(255,255,255,.07); overflow:hidden; }
   .bar i {
-    display:block; height:100%; width:0; border-radius:6px; background:var(--grad);
+    display:block; height:100%; width:0; background:var(--grad);
     transition:width 1.2s cubic-bezier(.2,.7,.3,1);
-    box-shadow:0 0 14px rgba(255,71,87,.5);
+    box-shadow:0 0 12px rgba(255,71,87,.55);
   }
 
-  /* ===== experience timeline ===== */
-  .timeline { position:relative; margin-left:10px; }
+  /* ===== experience — editorial ops log ===== */
+  .timeline { position:relative; margin-left:6px; counter-reset:ops; }
   .timeline::before {
-    content:''; position:absolute; left:0; top:6px; bottom:6px; width:2px;
-    background:linear-gradient(180deg, var(--red), var(--yellow), transparent);
+    content:''; position:absolute; left:0; top:10px; bottom:14px; width:1px;
+    background:linear-gradient(180deg, rgba(255,71,87,.65), rgba(255,209,102,.3), transparent);
   }
-  .t-item { position:relative; padding:0 0 34px 34px; }
-  .t-item:last-child { padding-bottom:0; }
+  .t-item {
+    position:relative; padding:0 0 32px 40px; counter-increment:ops;
+    border-bottom:1px solid rgba(255,255,255,.055);
+  }
+  .t-item:last-child { padding-bottom:0; border-bottom:0; }
   .t-item::before {
-    content:''; position:absolute; left:-7px; top:5px; width:14px; height:14px; border-radius:50%;
-    background:var(--bg); border:3px solid var(--red);
-    box-shadow:0 0 14px rgba(255,71,87,.55);
+    content:''; position:absolute; left:-4px; top:9px; width:9px; height:9px; border-radius:50%;
+    background:var(--bg); border:2px solid var(--red);
+    box-shadow:0 0 12px rgba(255,71,87,.5);
     animation:nodeZoomIn .5s ease-out backwards;
   }
   @keyframes nodeZoomIn { 0% { transform:scale(0); } 100% { transform:scale(1); } }
-  .t-item:nth-child(2)::before { border-color:var(--yellow); box-shadow:0 0 14px rgba(255,209,102,.55); animation-delay:.15s; }
-  .t-item:nth-child(3)::before { border-color:var(--white); box-shadow:0 0 14px rgba(245,240,238,.55); animation-delay:.3s; }
-  .t-item:nth-child(4)::before { border-color:var(--red); box-shadow:0 0 14px rgba(255,71,87,.55); animation-delay:.45s; }
+  .t-item:nth-child(2)::before { border-color:var(--yellow); box-shadow:0 0 12px rgba(255,209,102,.5); animation-delay:.15s; }
+  .t-item:nth-child(3)::before { border-color:var(--white); box-shadow:0 0 12px rgba(245,240,238,.5); animation-delay:.3s; }
+  .t-item:nth-child(4)::before { border-color:var(--red); box-shadow:0 0 12px rgba(255,71,87,.5); animation-delay:.45s; }
   .t-head { display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap; align-items:baseline; }
-  .t-role { font-size:1.12rem; font-weight:600; }
+  .t-role { font-size:1.26rem; font-weight:600; letter-spacing:.2px; }
+  .t-role::before {
+    content:counter(ops, decimal-leading-zero);
+    font-family:'JetBrains Mono', monospace; font-size:.7rem; font-weight:400;
+    color:var(--red); opacity:.6; letter-spacing:2px;
+    margin-right:12px; vertical-align:3px;
+  }
   .t-role span { color:var(--white); }
   .t-date {
-    font-family:'JetBrains Mono', monospace; font-size:.75rem; color:var(--red);
-    border:1px solid rgba(255,71,87,.35); padding:4px 11px; border-radius:20px; white-space:nowrap;
+    font-family:'JetBrains Mono', monospace; font-size:.69rem; color:var(--muted);
+    letter-spacing:2.5px; text-transform:uppercase; white-space:nowrap;
   }
-  .t-sub { font-family:'JetBrains Mono', monospace; font-size:.8rem; color:var(--yellow); margin:6px 0 10px; }
+  .t-date::before { content:'[ '; color:rgba(255,71,87,.7); }
+  .t-date::after  { content:' ]'; color:rgba(255,71,87,.7); }
+  .t-sub {
+    font-family:'JetBrains Mono', monospace; font-size:.73rem; color:var(--yellow);
+    margin:8px 0 12px; letter-spacing:1.6px; text-transform:uppercase;
+  }
   .t-item ul { list-style:none; }
-  .t-item li { color:var(--muted); font-size:.94rem; padding:4px 0 4px 18px; position:relative; }
+  .t-item li { color:var(--muted); font-size:.93rem; line-height:1.6; padding:5px 0 5px 20px; position:relative; }
   .t-item li::before { content:'▸'; position:absolute; left:0; color:var(--red); }
 
   /* ===== projects ===== */
@@ -320,14 +359,27 @@
   #project h2 + .project-card { margin-bottom:0; }
   #project h2:not(:first-of-type) { margin-top:70px; }
 
-  /* ===== skills ===== */
-  .skills-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:20px; }
+  /* ===== skills — editorial tool index ===== */
+  .skills-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:0 64px;
+    border-top:1px solid var(--surface-border); counter-reset:cat;
+  }
+  .edo-cat {
+    padding:26px 0; border-bottom:1px solid rgba(255,255,255,.055);
+    min-width:0; counter-increment:cat;
+  }
+  .edo-cat:nth-last-child(-n+2) { border-bottom:0; padding-bottom:4px; }
   .skill-cat h3 {
-    font-size:.95rem; margin-bottom:16px; display:flex; align-items:center; gap:10px;
+    font-size:.8rem; margin-bottom:16px; display:flex; align-items:center; gap:10px;
     font-family:'JetBrains Mono', monospace; color:var(--text); font-weight:600;
+    letter-spacing:2px; text-transform:uppercase;
+  }
+  .skill-cat h3::before {
+    content:counter(cat, decimal-leading-zero);
+    color:rgba(255,71,87,.75); font-size:.66rem; letter-spacing:1px; font-weight:400;
   }
   .skill-cat h3 .ico { color:var(--red); }
-  .chips { display:flex; flex-wrap:wrap; gap:9px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; }
   .chip {
     font-size:.84rem; padding:8px 15px; border-radius:9px;
     background:var(--surface); border:1px solid var(--surface-border);
@@ -336,6 +388,16 @@
   .chip:hover {
     border-color:var(--red); color:var(--red); transform:translateY(-2px);
     box-shadow:0 0 18px rgba(255,71,87,.25);
+  }
+  .skill-cat .chip {
+    font-family:'JetBrains Mono', monospace; font-size:.75rem; letter-spacing:.3px;
+    padding:5px 10px; border-radius:4px;
+    background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.09);
+    color:#b9c0cc;
+  }
+  .skill-cat .chip:hover {
+    color:var(--red); border-color:rgba(255,71,87,.45);
+    background:rgba(255,71,87,.06); box-shadow:none;
   }
   /* ===== certifications ===== */
   .certs { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px; }
@@ -430,7 +492,16 @@
   }
 
   @media (max-width: 820px) {
-    .about-grid { grid-template-columns:1fr; }
+    .about-edo { grid-template-columns:1fr; }
+    .about-edo .main { padding-right:0; }
+    .about-edo .side {
+      padding-left:0; border-left:0; margin-top:34px; padding-top:26px;
+      border-top:1px solid var(--surface-border);
+    }
+    .about-edo .side::before { display:none; }
+    .skills-grid { grid-template-columns:1fr; gap:0; }
+    .edo-cat:nth-last-child(-n+2) { border-bottom:1px solid rgba(255,255,255,.055); padding-bottom:26px; }
+    .edo-cat:last-child { border-bottom:0; }
     .p-points { grid-template-columns:1fr; }
     .nav-links li:not(:last-child) { display:none; }
     section { padding:70px 20px; }
@@ -496,36 +567,36 @@
 <section id="about">
   <span class="kicker reveal">/ about \</span>
   <h2 class="reveal">Recon <b>Summary</b></h2>
-  <div class="about-grid">
-    <div class="glass about-text reveal from-left">
-      <p>I'm a <strong>B.Tech Computer Science (Cybersecurity)</strong> student who treats security
-      as both a craft and a playground. On one side: <strong>TryHackMe Top 5% globally</strong>,
-      structured paths in offensive and defensive security, and regular CTF appearances.
-      On the other: <strong>building the tools I wish existed</strong> — like INTELLOG, a cloud VM
-      security analytics system I architected end-to-end.</p>
-      <p>Comfortable across the stack — <strong>Python backends, React dashboards, cloud infra on AWS/OpenStack</strong> —
-      with a security lens on everything: threat detection engines, packet analysis, vulnerability
-      assessment, and digital forensics.</p>
-      <span class="edu-tag">◉ currently: learning paths · CTFs · bug bounty fundamentals</span>
+  <div class="about-edo">
+    <div class="edo-col main reveal from-left">
+      <div class="edo-label"><b>01</b><span>profile</span><i></i></div>
+      <div class="edo-copy">
+        <p class="lead">I'm a <strong>B.Tech Computer Science (Cybersecurity)</strong> student who treats security
+        as both a craft and a playground. On one side: <strong>TryHackMe Top 5% globally</strong>,
+        structured paths in offensive and defensive security, and regular CTF appearances.
+        On the other: <strong>building the tools I wish existed</strong> — like INTELLOG, a cloud VM
+        security analytics system I architected end-to-end.</p>
+        <p>Comfortable across the stack — <strong>Python backends, React dashboards, cloud infra on AWS/OpenStack</strong> —
+        with a security lens on everything: threat detection engines, packet analysis, vulnerability
+        assessment, and digital forensics.</p>
+      </div>
+      <p class="edo-note"><span>◉</span> currently: learning paths · CTFs · bug bounty fundamentals</p>
     </div>
-    <div class="glass reveal from-right">
-      <div class="edu-row">
-        <div>
-          <div class="deg">B.Tech — CSE (Cybersecurity)</div>
-          <div class="org">GLA University, Aligarh</div>
-        </div>
+    <div class="edo-col side reveal from-right">
+      <div class="edo-label"><b>02</b><span>education &amp; training</span><i></i></div>
+      <div class="edu-entry">
+        <div class="deg">B.Tech — CSE (Cybersecurity)</div>
+        <div class="org">GLA University, Aligarh</div>
         <div class="meta">2024 – 2028</div>
       </div>
-      <div class="cgpa-bar">
+      <div class="gpa">
         <div class="lbl"><span>CGPA</span><span>7.4 / 10</span></div>
         <div class="bar"><i data-w="74%"></i></div>
       </div>
-      <div class="edu-row" style="margin-top:22px;">
-        <div>
-          <div class="deg">TryHackMe — Cyber Security 101</div>
-          <div class="org">Hands-on threat analysis · vulnerability assessment · defensive techniques</div>
-        </div>
-        <div class="meta">VERIFIED</div>
+      <div class="edu-entry">
+        <div class="deg">TryHackMe — Cyber Security 101</div>
+        <div class="org">Hands-on threat analysis · vulnerability assessment · defensive techniques</div>
+        <div class="meta">✓ verified</div>
       </div>
     </div>
   </div>
@@ -643,45 +714,45 @@
   <span class="kicker reveal">/ skills \</span>
   <h2 class="reveal">Tool <b>Arsenal</b></h2>
   <div class="skills-grid">
-    <div class="glass skill-cat reveal">
-      <h3><span class="ico">🛡</span> Cybersecurity Tools</h3>
+    <div class="skill-cat edo-cat reveal">
+      <h3><span class="ico">◇</span> Cybersecurity Tools</h3>
       <div class="chips">
         <span class="chip">Kali Linux</span><span class="chip">Metasploit</span><span class="chip">Burp Suite</span>
         <span class="chip">Nmap</span><span class="chip">Wireshark</span><span class="chip">OWASP ZAP</span>
         <span class="chip">+ MORE</span>
       </div>
     </div>
-    <div class="glass skill-cat reveal" style="--d:.1s">
-      <h3><span class="ico">⌨</span> Languages</h3>
+    <div class="skill-cat edo-cat reveal" style="--d:.1s">
+      <h3><span class="ico">{ }</span> Languages</h3>
       <div class="chips">
         <span class="chip">Python</span><span class="chip">Bash</span><span class="chip">Java</span><span class="chip">C</span>
         <span class="chip">SQL</span><span class="chip">HTML</span><span class="chip">CSS</span>
       </div>
     </div>
-    <div class="glass skill-cat reveal" style="--d:.2s">
-      <h3><span class="ico">☁</span> Cloud & DevOps</h3>
+    <div class="skill-cat edo-cat reveal" style="--d:.2s">
+      <h3><span class="ico">▲</span> Cloud & DevOps</h3>
       <div class="chips">
         <span class="chip">AWS EC2</span><span class="chip">OpenStack</span><span class="chip">Docker</span>
         <span class="chip">REST APIs</span><span class="chip">Git / GitHub</span>
       </div>
     </div>
-    <div class="glass skill-cat reveal">
-      <h3><span class="ico">🎯</span> Pentesting & Security</h3>
+    <div class="skill-cat edo-cat reveal">
+      <h3><span class="ico">◎</span> Pentesting & Security</h3>
       <div class="chips">
         <span class="chip">Vulnerability Assessment</span><span class="chip">Web App Security</span>
         <span class="chip">Digital Forensics</span><span class="chip">Packet Analysis</span>
         <span class="chip">TCP/IP</span><span class="chip">DNS</span><span class="chip">OSI Model</span>
       </div>
     </div>
-    <div class="glass skill-cat reveal" style="--d:.1s">
-      <h3><span class="ico">⚙</span> Frameworks & Systems</h3>
+    <div class="skill-cat edo-cat reveal" style="--d:.1s">
+      <h3><span class="ico">❖</span> Frameworks & Systems</h3>
       <div class="chips">
         <span class="chip">FastAPI</span><span class="chip">React</span><span class="chip">SQLite</span>
         <span class="chip">scikit-learn</span><span class="chip">Ubuntu</span><span class="chip">Windows</span>
       </div>
     </div>
-    <div class="glass skill-cat reveal" style="--d:.2s">
-      <h3><span class="ico">🧠</span> Soft Skills</h3>
+    <div class="skill-cat edo-cat reveal" style="--d:.2s">
+      <h3><span class="ico">◍</span> Soft Skills</h3>
       <div class="chips">
         <span class="chip">Problem Solving</span><span class="chip">Analytical Thinking</span><span class="chip">Team Collaboration</span>
       </div>
