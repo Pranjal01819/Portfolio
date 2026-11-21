@@ -399,6 +399,40 @@
     color:var(--red); border-color:rgba(255,71,87,.45);
     background:rgba(255,71,87,.06); box-shadow:none;
   }
+  /* ===== cert filter bar ===== */
+  .filter-bar {
+    display:flex; align-items:flex-end; flex-wrap:wrap;
+    margin:2px 0 26px; border-bottom:1px solid var(--surface-border);
+  }
+  .fbtn {
+    appearance:none; -webkit-appearance:none; background:none; border:0; cursor:pointer;
+    font-family:'JetBrains Mono', monospace; font-size:.7rem; letter-spacing:1.8px;
+    text-transform:uppercase; color:var(--muted); line-height:1;
+    padding:8px 0 13px; margin-right:26px; position:relative;
+    transition:color .2s ease;
+  }
+  .fbtn b {
+    font-weight:400; font-size:.59rem; margin-left:6px;
+    color:rgba(255,255,255,.28); transition:color .2s ease;
+  }
+  .fbtn::after {
+    content:''; position:absolute; left:0; right:0; bottom:-1px; height:1px;
+    background:var(--red); transform:scaleX(0); transform-origin:left;
+    transition:transform .28s cubic-bezier(.2,.7,.3,1);
+  }
+  .fbtn:hover { color:var(--text); }
+  .fbtn:hover::after { transform:scaleX(.45); }
+  .fbtn.on { color:var(--red); }
+  .fbtn.on b { color:rgba(255,71,87,.55); }
+  .fbtn.on::after { transform:scaleX(1); }
+  .fbtn:focus-visible { outline:1px dashed rgba(255,71,87,.65); outline-offset:5px; }
+  .fcount {
+    margin-left:auto; padding-bottom:13px;
+    font-family:'JetBrains Mono', monospace; font-size:.66rem;
+    letter-spacing:2px; color:var(--muted); white-space:nowrap;
+  }
+  .fcount b { color:var(--red); font-weight:400; }
+
   /* ===== certifications ===== */
   .certs { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px; }
   .cert {
@@ -419,6 +453,10 @@
     font-family:'JetBrains Mono', monospace; font-size:.7rem; color:var(--white);
     letter-spacing:1px; text-transform:uppercase; display:block; margin-bottom:3px;
   }
+  .cert.fx-out { animation:certOut .2s ease forwards; }
+  .cert.fx-in  { animation:certIn .4s cubic-bezier(.2,.7,.3,1) backwards; animation-delay:var(--fd, 0s); }
+  @keyframes certOut { to { opacity:0; transform:translateY(6px); } }
+  @keyframes certIn  { from { opacity:0; transform:translateY(10px) scale(.985); } }
 
   /* ===== contact ===== */
   .contact-card {
@@ -713,8 +751,20 @@
 <section id="skills">
   <span class="kicker reveal">/ skills \</span>
   <h2 class="reveal">Tool <b>Arsenal</b></h2>
+
+  <div class="filter-bar reveal" role="group" aria-label="Filter skills by category">
+    <button type="button" class="fbtn on" data-filter="all" aria-pressed="true">All <b>06</b></button>
+    <button type="button" class="fbtn" data-filter="sec" aria-pressed="false">Security <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="lang" aria-pressed="false">Languages <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="cloud" aria-pressed="false">Cloud <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="pen" aria-pressed="false">Pentesting <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="frame" aria-pressed="false">Frameworks <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="soft" aria-pressed="false">Soft Skills <b>01</b></button>
+    <span class="fcount" aria-live="polite">06 / 06</span>
+  </div>
+
   <div class="skills-grid">
-    <div class="skill-cat edo-cat reveal">
+    <div class="skill-cat edo-cat reveal" data-cat="sec">
       <h3><span class="ico">◇</span> Cybersecurity Tools</h3>
       <div class="chips">
         <span class="chip">Kali Linux</span><span class="chip">Metasploit</span><span class="chip">Burp Suite</span>
@@ -722,21 +772,21 @@
         <span class="chip">+ MORE</span>
       </div>
     </div>
-    <div class="skill-cat edo-cat reveal" style="--d:.1s">
+    <div class="skill-cat edo-cat reveal" style="--d:.1s" data-cat="lang">
       <h3><span class="ico">{ }</span> Languages</h3>
       <div class="chips">
         <span class="chip">Python</span><span class="chip">Bash</span><span class="chip">Java</span><span class="chip">C</span>
         <span class="chip">SQL</span><span class="chip">HTML</span><span class="chip">CSS</span>
       </div>
     </div>
-    <div class="skill-cat edo-cat reveal" style="--d:.2s">
+    <div class="skill-cat edo-cat reveal" style="--d:.2s" data-cat="cloud">
       <h3><span class="ico">▲</span> Cloud & DevOps</h3>
       <div class="chips">
         <span class="chip">AWS EC2</span><span class="chip">OpenStack</span><span class="chip">Docker</span>
         <span class="chip">REST APIs</span><span class="chip">Git / GitHub</span>
       </div>
     </div>
-    <div class="skill-cat edo-cat reveal">
+    <div class="skill-cat edo-cat reveal" data-cat="pen">
       <h3><span class="ico">◎</span> Pentesting & Security</h3>
       <div class="chips">
         <span class="chip">Vulnerability Assessment</span><span class="chip">Web App Security</span>
@@ -744,14 +794,14 @@
         <span class="chip">TCP/IP</span><span class="chip">DNS</span><span class="chip">OSI Model</span>
       </div>
     </div>
-    <div class="skill-cat edo-cat reveal" style="--d:.1s">
+    <div class="skill-cat edo-cat reveal" style="--d:.1s" data-cat="frame">
       <h3><span class="ico">❖</span> Frameworks & Systems</h3>
       <div class="chips">
         <span class="chip">FastAPI</span><span class="chip">React</span><span class="chip">SQLite</span>
         <span class="chip">scikit-learn</span><span class="chip">Ubuntu</span><span class="chip">Windows</span>
       </div>
     </div>
-    <div class="skill-cat edo-cat reveal" style="--d:.2s">
+    <div class="skill-cat edo-cat reveal" style="--d:.2s" data-cat="soft">
       <h3><span class="ico">◍</span> Soft Skills</h3>
       <div class="chips">
         <span class="chip">Problem Solving</span><span class="chip">Analytical Thinking</span><span class="chip">Team Collaboration</span>
@@ -764,8 +814,18 @@
 <section id="certs">
   <span class="kicker reveal">/ achievements \</span>
   <h2 class="reveal">Achievements & <b>Certifications</b></h2>
+
+  <div class="filter-bar reveal" role="group" aria-label="Filter certifications by category">
+    <button type="button" class="fbtn on" data-filter="all" aria-pressed="true">All <b>05</b></button>
+    <button type="button" class="fbtn" data-filter="ctf" aria-pressed="false">CTF &amp; Awards <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="thm" aria-pressed="false">TryHackMe <b>02</b></button>
+    <button type="button" class="fbtn" data-filter="net" aria-pressed="false">Networking <b>01</b></button>
+    <button type="button" class="fbtn" data-filter="off" aria-pressed="false">Offensive <b>01</b></button>
+    <span class="fcount" aria-live="polite">05 / 05</span>
+  </div>
+
   <div class="certs">
-    <div class="cert reveal">
+    <div class="cert reveal" data-cat="ctf">
       <div class="ico">🏆</div>
       <div>
         <span class="rank">CTF Podium</span>
@@ -773,7 +833,7 @@
         <p>Techkriti 2026, IIT Kanpur</p>
       </div>
     </div>
-    <div class="cert reveal" style="--d:.1s">
+    <div class="cert reveal" style="--d:.1s" data-cat="thm">
       <div class="ico">🛡</div>
       <div>
         <span class="rank">TryHackMe · Verified</span>
@@ -781,7 +841,7 @@
         <p>Foundational training in networking, Linux, and core security concepts</p>
       </div>
     </div>
-    <div class="cert reveal" style="--d:.2s">
+    <div class="cert reveal" style="--d:.2s" data-cat="thm">
       <div class="ico">🎯</div>
       <div>
         <span class="rank">TryHackMe · Verified</span>
@@ -789,7 +849,7 @@
         <p>Threat analysis, vulnerability assessment, defensive techniques</p>
       </div>
     </div>
-    <div class="cert reveal" style="--d:.3s">
+    <div class="cert reveal" style="--d:.3s" data-cat="net">
       <div class="ico">🌐</div>
       <div>
         <span class="rank">Cisco NetAcad · Verified</span>
@@ -797,7 +857,7 @@
         <p>Network concepts, protocols, devices, connectivity fundamentals</p>
       </div>
     </div>
-    <div class="cert reveal" style="--d:.4s">
+    <div class="cert reveal" style="--d:.4s" data-cat="off">
       <div class="ico">🔴</div>
       <div>
         <span class="rank">Red Team Leader</span>
@@ -1220,6 +1280,156 @@
         send.disabled = false;
       }
     });
+  })();
+
+  /* ================= SKILLS FILTERS: data view ================= */
+  (function () {
+    const bar = document.querySelector('#skills .filter-bar');
+    const grid = document.querySelector('#skills .skills-grid');
+    if (!bar || !grid) return;
+
+    const cats = Array.from(grid.querySelectorAll('.skill-cat'));
+    const btns = Array.from(bar.querySelectorAll('.fbtn'));
+    const countEl = bar.querySelector('.fcount');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pad = n => String(n).padStart(2, '0');
+    const timers = new WeakMap();
+    let current = 'all';
+
+    /* live counts — remain correct if skills are added or removed later */
+    const totals = {};
+    cats.forEach(c => { const k = c.dataset.cat || 'other'; totals[k] = (totals[k] || 0) + 1; });
+    btns.forEach(b => {
+      const f = b.dataset.filter;
+      const n = f === 'all' ? cats.length : (totals[f] || 0);
+      const slot = b.querySelector('b');
+      if (slot) slot.textContent = pad(n);
+      if (!n) b.hidden = true;           /* category empty → drop the control */
+    });
+
+    function paint(shown) {
+      countEl.innerHTML = '<b>' + pad(shown) + '</b> / ' + pad(cats.length);
+    }
+
+    function apply(filter, animate) {
+      current = filter;
+      let shown = 0;
+
+      btns.forEach(b => {
+        const on = b.dataset.filter === filter;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+
+      cats.forEach(c => {
+        const match = filter === 'all' || c.dataset.cat === filter;
+        const pending = timers.get(c);
+        if (pending) { clearTimeout(pending); timers.delete(c); }
+        c.classList.remove('fx-out', 'fx-in');
+        c.style.display = '';
+
+        if (match) {
+          shown++;
+          if (animate && !reduce) {
+            c.style.setProperty('--fd', (shown * 0.04) + 's');
+            c.classList.add('fx-in');
+          }
+        } else if (animate && !reduce) {
+          c.classList.add('fx-out');
+          timers.set(c, setTimeout(() => {
+            if (c.classList.contains('fx-out')) c.style.display = 'none';
+            timers.delete(c);
+          }, 210));
+        } else {
+          c.style.display = 'none';
+        }
+      });
+
+      paint(shown);
+    }
+
+    bar.addEventListener('click', e => {
+      const b = e.target.closest('.fbtn');
+      if (!b || b.dataset.filter === current) return;
+      apply(b.dataset.filter, true);
+    });
+
+    paint(cats.length);
+  })();
+
+  /* ================= CERT FILTERS: data view ================= */
+  (function () {
+    const bar = document.querySelector('#certs .filter-bar');
+    const grid = document.querySelector('#certs .certs');
+    if (!bar || !grid) return;
+
+    const cards = Array.from(grid.querySelectorAll('.cert'));
+    const btns = Array.from(bar.querySelectorAll('.fbtn'));
+    const countEl = bar.querySelector('.fcount');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pad = n => String(n).padStart(2, '0');
+    const timers = new WeakMap();
+    let current = 'all';
+
+    /* live counts — remain correct if certs are added or removed later */
+    const totals = {};
+    cards.forEach(c => { const k = c.dataset.cat || 'other'; totals[k] = (totals[k] || 0) + 1; });
+    btns.forEach(b => {
+      const f = b.dataset.filter;
+      const n = f === 'all' ? cards.length : (totals[f] || 0);
+      const slot = b.querySelector('b');
+      if (slot) slot.textContent = pad(n);
+      if (!n) b.hidden = true;           /* category empty → drop the control */
+    });
+
+    function paint(shown) {
+      countEl.innerHTML = '<b>' + pad(shown) + '</b> / ' + pad(cards.length);
+    }
+
+    function apply(filter, animate) {
+      current = filter;
+      let shown = 0;
+
+      btns.forEach(b => {
+        const on = b.dataset.filter === filter;
+        b.classList.toggle('on', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+
+      cards.forEach(c => {
+        const match = filter === 'all' || c.dataset.cat === filter;
+        const pending = timers.get(c);
+        if (pending) { clearTimeout(pending); timers.delete(c); }
+        c.classList.remove('fx-out', 'fx-in');
+        c.style.display = '';
+
+        if (match) {
+          shown++;
+          if (animate && !reduce) {
+            c.style.setProperty('--fd', (shown * 0.04) + 's');
+            c.classList.add('fx-in');
+          }
+        } else if (animate && !reduce) {
+          c.classList.add('fx-out');
+          timers.set(c, setTimeout(() => {
+            if (c.classList.contains('fx-out')) c.style.display = 'none';
+            timers.delete(c);
+          }, 210));
+        } else {
+          c.style.display = 'none';
+        }
+      });
+
+      paint(shown);
+    }
+
+    bar.addEventListener('click', e => {
+      const b = e.target.closest('.fbtn');
+      if (!b || b.dataset.filter === current) return;
+      apply(b.dataset.filter, true);
+    });
+
+    paint(cards.length);
   })();
 
   /* ================= PARALLAX GLOWS ================= */
