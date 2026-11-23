@@ -1073,16 +1073,16 @@
 
   if (!reduced) {
     initNet();
-    // Load background layers progressively
+    // Load background layers progressively - faster for better UX
     setTimeout(() => {
       document.getElementById('bgnet').classList.add('loaded');
-    }, 500);
+    }, 200);
     setTimeout(() => {
       document.getElementById('bats').classList.add('loaded');
-    }, 1000);
+    }, 400);
     setTimeout(() => {
       document.querySelector('.bg-grid').classList.add('loaded');
-    }, 1500);
+    }, 600);
     
     // Throttle resize events for better performance
     let resizeTimeout;
@@ -1527,22 +1527,18 @@
         if (section.id === 'skills') {
           const cats = section.querySelectorAll('.skill-cat');
           cats.forEach((cat, i) => {
-            requestAnimationFrame(() => {
-              setTimeout(() => {
-                cat.style.opacity = '1';
-                cat.style.transform = 'translateY(0)';
-              }, i * 60);  // Reduced delay for smoother performance
-            });
+            // Force immediate visibility for skills
+            cat.style.opacity = '1';
+            cat.style.transform = 'translateY(0)';
+            cat.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
           });
         } else if (section.id === 'certs') {
           const cards = section.querySelectorAll('.cert');
           cards.forEach((card, i) => {
-            requestAnimationFrame(() => {
-              setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-              }, i * 80);  // Reduced delay for smoother performance
-            });
+            // Force immediate visibility for certs
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+            card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
           });
         }
         
@@ -1569,7 +1565,7 @@
       section.style.opacity = '1';
       section.style.transform = 'translateY(0)';
     });
-  }, 2000);
+  }, 1000);  // Reduced timeout for faster fallback
 
   /* ========== TAGS: SCROLL DOWN → ASSEMBLE · SCROLL UP → SCATTER (LAZY) ========== */
   const TAG_SEL = '.tech-tags .tag, .chips .chip, .p-metrics .metric, .contact-links .btn';
