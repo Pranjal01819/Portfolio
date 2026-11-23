@@ -46,12 +46,22 @@
     width:100%; height:100%;
     pointer-events:none;
     filter:blur(2px);
+    opacity:0; /* Start hidden, fade in when loaded */
+    transition:opacity 1s ease;
+  }
+  #bgnet.loaded {
+    opacity:1;
   }
   #bats {
     position:fixed; inset:0; z-index:-1;
     width:100%; height:100%;
     pointer-events:none;
     filter:blur(1px);
+    opacity:0; /* Start hidden, fade in when loaded */
+    transition:opacity 1.5s ease;
+  }
+  #bats.loaded {
+    opacity:1;
   }
   .bg-grid {
     position:fixed; inset:0; z-index:-3;
@@ -61,6 +71,11 @@
     background-size: 44px 44px;
     mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 40%, transparent 100%);
     filter:blur(1px);
+    opacity:0; /* Start hidden, fade in when loaded */
+    transition:opacity 2s ease;
+  }
+  .bg-grid.loaded {
+    opacity:1;
   }
   .glow {
     position:fixed; z-index:-4; border-radius:50%;
@@ -519,6 +534,30 @@
   .reveal.from-left  { transform:translateX(-40px); }
   .reveal.from-right { transform:translateX(40px); }
   .reveal.from-left.in, .reveal.from-right.in { transform:none; }
+
+  /* ===== progressive scroll loading ===== */
+  section {
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity 0.6s ease, transform 0.6s ease;
+  }
+  section.loaded {
+    opacity:1;
+    transform:translateY(0);
+  }
+  
+  /* Skills and certs specific lazy animations */
+  #skills .skill-cat {
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  #certs .cert {
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity 0.5s ease, transform 0.5s ease;
+  }
 
   /* ===== tag states: down = assemble · up = scatter ===== */
   .fx { transition: opacity .5s ease var(--d,0s), transform .55s cubic-bezier(.2,.7,.3,1) var(--d,0s); }
@@ -1034,6 +1073,17 @@
 
   if (!reduced) {
     initNet();
+    // Load background layers progressively
+    setTimeout(() => {
+      document.getElementById('bgnet').classList.add('loaded');
+    }, 500);
+    setTimeout(() => {
+      document.getElementById('bats').classList.add('loaded');
+    }, 1000);
+    setTimeout(() => {
+      document.querySelector('.bg-grid').classList.add('loaded');
+    }, 1500);
+    
     window.addEventListener('resize', initNet);
     window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
     document.addEventListener('mouseleave', () => { mouse.x = -9999; mouse.y = -9999; });
@@ -1445,31 +1495,91 @@
   }
   window.addEventListener('scroll', onParallax, { passive: true });
 
-  /* ================= REVEAL ON SCROLL (staggered) ================= */
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('in');
-        e.target.querySelectorAll('.bar i').forEach(b => b.style.width = b.getAttribute('data-w'));
-        io.unobserve(e.target);
+  /* ================= PROGRESSIVE SCROLL LOADING ================= */
+  // Load sections progressively as user scrolls, reducing initial payload
+  const sections = document.querySelectorAll('section');
+  const observerOptions = { 
+    rootMargin: '100px 0px', // Start loading 100px before section enters viewport
+    threshold: 0.05 
+  };
+  
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const section = entry.target;
+        section.classList.add('loaded');
+        
+        // Trigger specific section animations
+        if (section.id === 'skills') {
+          const cats = section.querySelectorAll('.skill-cat');
+          cats.forEach((cat, i) => {
+            setTimeout(() => {
+              cat.style.opacity = '1';
+              cat.style.transform = 'translateY(0)';
+            }, i * 80);
+          });
+        } else if (section.id === 'certs') {
+          const cards = section.querySelectorAll('.cert');
+          cards.forEach((card, i) => {
+            setTimeout(() => {
+              card.style.opacity = '1';
+              card.style.transform = 'translateY(0)';
+            }, i * 120);
+          });
+        }
+        
+        sectionObserver.unobserve(section);
       }
     });
-  }, { threshold: 0.12 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  }, observerOptions);
 
-  /* ========== TAGS: SCROLL DOWN → ASSEMBLE · SCROLL UP → SCATTER ========== */
+  // Observe all sections
+  sections.forEach(section => {
+    section.style.opacity = '0';
+    section.style.transform = 'translateY(30px)';
+    section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    sectionObserver.observe(section);
+  });
+
+  // Fallback: ensure all sections are visible if intersection observer fails
+  setTimeout(() => {
+    sections.forEach(section => {
+      section.classList.add('loaded');
+      section.style.opacity = '1';
+      section.style.transform = 'translateY(0)';
+    });
+  }, 2000);
+
+  /* ========== TAGS: SCROLL DOWN → ASSEMBLE · SCROLL UP → SCATTER (LAZY) ========== */
   const TAG_SEL = '.tech-tags .tag, .chips .chip, .p-metrics .metric, .contact-links .btn';
   const tags = document.querySelectorAll(TAG_SEL);
   const visible = new Set();
   const rnd = (a, b) => a + Math.random() * (b - a);
+  let tagsLoaded = false;
 
-  // Each tag owns a stable random scatter destination + delay
-  tags.forEach(el => {
-    el.style.setProperty('--sx', rnd(-48, 48).toFixed(1) + 'px');
-    el.style.setProperty('--sy', rnd(-36, 36).toFixed(1) + 'px');
-    el.style.setProperty('--sr', rnd(-24, 24).toFixed(1) + 'deg');
-    el.style.setProperty('--sd', rnd(0, .18).toFixed(2) + 's');
-  });
+  // Load tags progressively when skills section is visible
+  function loadTags() {
+    if (tagsLoaded) return;
+    tagsLoaded = true;
+    
+    // Each tag owns a stable random scatter destination + delay
+    tags.forEach(el => {
+      el.style.setProperty('--sx', rnd(-48, 48).toFixed(1) + 'px');
+      el.style.setProperty('--sy', rnd(-36, 36).toFixed(1) + 'px');
+      el.style.setProperty('--sr', rnd(-24, 24).toFixed(1) + 'deg');
+      el.style.setProperty('--sd', rnd(0, .18).toFixed(2) + 's');
+    });
+    
+    // Initial assembly for tags already in view
+    setTimeout(() => {
+      const visibleTags = Array.from(visible).filter(el => 
+        el.matches(TAG_SEL)
+      );
+      assemble(visibleTags.sort((a, b) =>
+        a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+      ));
+    }, 300);
+  }
 
   function assemble(ordered) {
     let idx = 0;
@@ -1491,6 +1601,10 @@
       const el = e.target;
       if (e.isIntersecting) {
         visible.add(el);
+        // Load tags when skills section comes into view
+        if (el.closest('#skills') && !tagsLoaded) {
+          loadTags();
+        }
         // re-entered the viewport while hidden (e.g. scrolling back up
         // over a section) → revive it SCATTERED, never invisible:
         // tag-gone alone would leave the tags permanently opacity:0
@@ -1508,9 +1622,14 @@
     tags.forEach(el => vis.observe(el));
 
     // initial assembly for tags already in view on load
-    setTimeout(() => assemble([...visible].sort((a, b) =>
-      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
-    )), 150);
+    setTimeout(() => {
+      const visibleTags = Array.from(visible).filter(el => 
+        el.matches(TAG_SEL)
+      );
+      if (visibleTags.length > 0) {
+        loadTags();
+      }
+    }, 150);
 
     let lastY = window.scrollY, ticking = false;
     window.addEventListener('scroll', () => {
